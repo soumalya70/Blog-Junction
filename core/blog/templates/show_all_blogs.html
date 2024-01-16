@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block start %}
+    {% comment %} {{blog.content |safe}} {% endcomment %}
+<div class="container mt-5">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Blog Title</th>
+            <th scope="col">Created at</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>
+              <a href='#' class='btn btn-success'> Update Blog </a>
+              <a href='#' class='btn btn-danger'> Delete Blog </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+
+{% endblock %}
