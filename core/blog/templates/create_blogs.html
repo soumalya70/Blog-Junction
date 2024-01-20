@@ -3,21 +3,37 @@
     {% comment %} {{blog.content |safe}} {% endcomment %}
 <div class="container mt-5">
     <div class="row">
-        <form>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% if messages %}
+                {% for message in messages%}
+                    <div class="alert alert-info">
+                      {{ message }}
+                    </div>
+                {% endfor %}   
+              {% endif %}
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Select Category</label>
-                <Select class="form-control">
+                <label for="text"  class="form-label">Select Category</label>
+                <Select class="form-control" name="category">
                     <option>Choose</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.Category_name }}</option>
+                    {% endfor %}
                 </select>
               </div>
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Enter Title</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+              <input type="text" name="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
               
             </div>
             <div class="mb-3">
-              <label for="exampleInputPassword1" class="form-label">Password</label>
-              <input type="password" class="form-control" id="exampleInputPassword1">
+              <label for="exampleInputEmail1" class="form-label">Upload Banner Image</label>
+              <input type="file" name="banner_image" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+              
+            </div>
+            <div class="mb-3">
+              {{form.media}}
+            {{form.as_p}}
             </div>
             <button type="submit" class="btn btn-primary">Create Blog</button>
           </form>
