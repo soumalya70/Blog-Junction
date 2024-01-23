@@ -47,7 +47,8 @@ def register_attempt(request):
         
     # return render(request,'register_attempt.html')
 def show_all_blogs(request):
-    return render (request,'show_all_blogs.html')
+    context={"blogs":Blog.objects.filter(user=request.user)}
+    return render (request,'show_all_blogs.html',context)
 def create_blogs(request):
     context={'form': BlogForm, 'categories': Category.objects.all()}
     if request.method =="POST":
@@ -64,10 +65,42 @@ def create_blogs(request):
             return redirect('/create-blogs/')
     return render(request,'create_blogs.html',context)
 
-def update_blogs(request):
-    return render(request,'update_blogs.html')
+def update_blogs(request,id):
+    context={'categories': Category.objects.all()}
+    try:
+        if request.method =="POST":
+            form=BlogForm(request.POST)
+            category= request.POST.get('category')
+            title=request.POST.get('title')
+            banner_image=request.FILES['banner_image']
+            if form.is_valid():
+                content=form.cleaned_data['content']
+                blog_obj=Blog.objects.get(id=id)
+            
+                blog_obj.title=title
+                blog_obj.content=content
+                blog_obj.category=Category.objects.get(id=category)
+                if banner_image:
+                    blog_obj.banner_image=banner_image
+                blog_obj.save()
+                messages.success(request,"Blog Updated successfully")
+                return redirect('/create-blogs/')
+        blog_obj = Blog.objects.get(id=id)
+        if blog_obj.user != request.user:
+            return redirect('/')
+        initial_dict={'content': blog_obj.content}
+        form=BlogForm(initial=initial_dict)
+        context['form']=form
+        context['blog_obj']=blog_obj
+    except Exception as e:
+        print(e)
+    return render(request,'update_blogs.html', context)
 def delete_blog(request,id):
-    return redirect('/')
+    blog_obj = Blog.objects.get(id=id)
+    if  blog_obj.user!=request.user:
+        return redirect('/')
+    blog_obj.delete()
+    return redirect('/show-all-blogs/')
 def get_blog(request,id):
     context={}
     try:

@@ -5,22 +5,24 @@
     <table class="table">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th scope="col"></th>
             <th scope="col">Blog Title</th>
             <th scope="col">Created at</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
+          {% for blog in blogs %}
           <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{blog.title}}</td>
+            <td>{{blog.created_at}}</td>
             <td>
-              <a href='#' class='btn btn-success'> Update Blog </a>
-              <a href='#' class='btn btn-danger'> Delete Blog </a>
+              <a href='{% url "update_blogs" blog.id %}' class='btn btn-success'> Update Blog </a>
+              <a href='{% url "delete_blog" blog.id %}' class='btn btn-danger'> Delete Blog </a>
             </td>
           </tr>
+          {% endfor %}
         </tbody>
       </table>
 </div>
