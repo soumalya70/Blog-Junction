@@ -4,10 +4,12 @@ from .form import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def home(request):
-    return render(request,'home.html')
+    context={'blogs': Blog.objects.all()}
+    return render(request,'home.html',context)
 def login_attempt(request):
     if request.method=='POST':
         username=request.POST.get('username')
@@ -46,9 +48,12 @@ def register_attempt(request):
     return render(request,"register_attempt.html")
         
     # return render(request,'register_attempt.html')
+@login_required(login_url='/login/')
 def show_all_blogs(request):
     context={"blogs":Blog.objects.filter(user=request.user)}
     return render (request,'show_all_blogs.html',context)
+
+@login_required(login_url='/login/')
 def create_blogs(request):
     context={'form': BlogForm, 'categories': Category.objects.all()}
     if request.method =="POST":
@@ -65,6 +70,7 @@ def create_blogs(request):
             return redirect('/create-blogs/')
     return render(request,'create_blogs.html',context)
 
+@login_required(login_url='/login/')
 def update_blogs(request,id):
     context={'categories': Category.objects.all()}
     try:
@@ -95,6 +101,7 @@ def update_blogs(request,id):
     except Exception as e:
         print(e)
     return render(request,'update_blogs.html', context)
+@login_required(login_url='/login/')
 def delete_blog(request,id):
     blog_obj = Blog.objects.get(id=id)
     if  blog_obj.user!=request.user:
